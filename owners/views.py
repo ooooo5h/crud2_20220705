@@ -41,15 +41,18 @@ class OwnerView(View):
 #         )
 #         return JsonResponse({'Message':'Dog created'}, status=201)
 
-## 외래키인 아이들은 xx_id 붙여야 가져온다.
+# id가 아닌 이름으로 post하는 방법
 class DogView(View):
     def post(self, request):
         # 생성
         data = json.loads(request.body)
+        owner1 = Owner.objects.get(name=data['owner_name'])
+        # 클라이언트가 보낸 request의 body부분 중 키값이 owner_name인 벨류값을 갖고와서
+        # owner의 객체들 중에 일치하는 객체 1개만 갖고와 
         
         Dog.objects.create(
             name = data['name'],
             age = data['age'],
-            owner_id = data['owner_id']   # owner_id로 바꿔야한다. fk인 아이들은 xxxx_id로 넣어줄 수 있다.
+            owner = owner1
         )
         return JsonResponse({'Message':'Dog created'}, status=201)
