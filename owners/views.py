@@ -56,3 +56,29 @@ class DogView(View):
             owner = owner1
         )
         return JsonResponse({'Message':'Dog created'}, status=201)
+
+    ## 복잡하게 짤 필요가 없었어!! 에러 발생
+    # AttributeError: type object 'Dog' has no attribute 'owner_set'
+    # def get(self, request):
+    #     # 조회
+    #     dogs = Dog.objects.all()
+    #     results = []
+    #     for dog in dogs:
+    #         dog_owner = Dog.owner_set.get(id=dog.owner_id)
+    #         results.append({
+    #             'dog_name' : dog.name,
+    #             'dog_age' : dog.age,
+    #             'owner_name' : dog_owner.name
+    #         })
+    #     return JsonResponse({'Results':results}, status=200)
+    
+    def get(self, request):
+        dogs = Dog.objects.all()  # dogs에는 querySet이 담겨있다 하나하나씩 쪼개서 담아줘야한다
+        results = []
+        for dog in dogs:
+            results.append({
+                'dog_name' : dog.name,
+                'dog_age' : dog.age,
+                'owner_name' : dog.owner.name
+            })
+        return JsonResponse({'Results':results}, status=200)
