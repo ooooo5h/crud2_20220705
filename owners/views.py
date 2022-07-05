@@ -16,16 +16,44 @@ class OwnerView(View):
         )
         return JsonResponse({'Message':'Owner created'}, status=201)
     
+    # way1 
+    # def get(self, request):
+    #     owners = Owner.objects.all()
+    #     dogs = Dog.objects.all()
+    #     result = []
+    #     for owner in owners:
+    #         for dog in dogs:
+    #             if dog.owner_id == owner.id:
+    #                 result.append({
+    #                     'name' : owner.name,
+    #                     'email' : owner.email,
+    #                     'age' : owner.age,
+    #                     'dog_name' : dog.name,
+    #                     'dog_age' : dog.age,
+    #                 })
+        
+    #     return JsonResponse({'results':result}, status=200)
+    
+    # way2
     def get(self, request):
         owners = Owner.objects.all()
         result = []
         for owner in owners:
+            dogs = Dog.objects.filter(owner_id=owner.id)
+            dog_list = []
+            for dog in dogs:
+                dog_list.append({
+                    'dog_name' : dog.name,
+                    'dog_age' : dog.age,
+                })
             result.append({
                 'name' : owner.name,
                 'email' : owner.email,
-                'age' : owner.age
+                'age' : owner.age,
+                'dogs' : dog_list
             })
         return JsonResponse({'results':result}, status=200)
+
     
 
 # 에러 발생...ㅠㅠㅠ
