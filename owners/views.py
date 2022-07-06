@@ -28,19 +28,8 @@ class OwnerView(View):
         owners = Owner.objects.all()
         result = []
         for owner in owners:
-            dogs = owner.dog_set.all()  # Dog.objects.filter(owner=owner) 필터를 걸어서 가져와도 쿼리셋/, 역참조로 all을 해도 쿼리셋인데 
-            # 깡아지 입장에서 owner는 정참조다.
-            # 주인 입장에서 강아지 정보는 없다. 없지만 강아지가 
-            # 주인과관계가 있기 때문에 주인도 강아지의 정보를 가져올 수 있다.
-            # 이게 역참조!!! 속성.으로 가면 정참고, .으로 접근 못하지만 관계가 걸려있는 데이터를 가져올때는 역참조
-            # 역참조 관계가 되면 데이터를 여러개 가져올 수 잇다..?
-            # 역참조로 가져오면 그치그치 읻래다의 관계에서 다대 1일이잠,ㄴ 1의 관계에서는 다니까.
-            # 역참조를 위한 매니저클래스가 클래스이름_set이다. objects와 같은 매니저클래스.
-            # set을 적기 싫으면 related_name을 적어주면 된다. 저걸 dogs로 하면 
-            # owner의 역참조 이름이 related_name을 적어주면
-            # 그 이름이 역참조를 ㅎ기 위핸 매니저클래스의 이름이 된다.!!
-            # 클래스이름_set이싫다면 저렇게 해줄 수 있다.
-            
+            dogs = owner.dog_set.all()  
+                        
             dog_list = []
             for dog in dogs:
                 dog_list.append({
@@ -82,9 +71,6 @@ class DogView(View):
             #     return JsonResponse({'Message':'Not Found'}, status=404)
 
             owner = Owner.objects.get(id=owner_id)  
-            # get은 무조건 한가지만 가져온다. 그렇기때문에 name으로 가져오면
-            # 값이 2개 이상일 경우 multi~~저쩌고 에러가 발생한다.
-            # pk 유일한 값을 가지고 조회하는 게 좋다!
         
             Dog.objects.create(
                 name  = name,
@@ -114,9 +100,5 @@ class DogView(View):
                 'dog_name'   : dog.name,
                 'dog_age'    : dog.age,
                 'owner_name' : dog.owner.name   
-                # dog클래스에 owner라는 속성이 있고, 
-                # fk키로 연결이 되어있고
-                # Owner을 가리킨다.
-                # .을 찍으면 Owner 클래스의 속성을 사용할 수 있다.
             })
         return JsonResponse({'Result':result}, status=200)
