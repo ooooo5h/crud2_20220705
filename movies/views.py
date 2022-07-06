@@ -20,13 +20,14 @@ class ActorView(View):
     def get(self, request):
         actors = Actor.objects.all()
         results = []
-        for actor in actors:
-            
+        
+        for actor in actors:    
             movies = ActorAndMovie.objects.filter(actor_id=actor.id)
+            # movies = actor.movies.all() 로 간단하게 처리가 된다 위의 코드가.
             movie_list = []
             for movie in movies:
                 movie_list.append(Movie.objects.get(id=movie.movie_id).title)
-                        
+                # movie_list.append(movie.title)   
             results.append({
                 'last_name' : actor.last_name,
                 'first_name' : actor.first_name,
@@ -51,6 +52,7 @@ class MovieView(View):
         for movie in movies:
             actors_and_movies = movie.actorandmovie_set.all()  # _set으로 역참조 연결
             actors = []
+            # actors = movie.actor_set.all() 로 간단하게 구현이 가능하다.
             
             for actor_and_movie in actors_and_movies:
                 actors.append({
